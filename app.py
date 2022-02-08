@@ -132,7 +132,7 @@ def run_recommender():
         st.markdown('''<h5 style='text-align: left; color: #d73b5c;'> Fetching the movie poster...</h5>''', unsafe_allow_html=True)
         if poster == "No":
             if select_genre:
-                imdb_score = st.slider("Choose an IMDB score:", min_value=1, max_value=10, step=0.5)
+                imdb_score = st.slider("Choose an IMDB score:", min_value=1, max_value=10, step=1)
                 number_of_rec = st.slider("How many recommendations do you want?", min_value=5, max_value=20, step=1)
                 test_point = [1 if genre in select_genre else 0 for genre in genres]
                 test_point.append(imdb_score)
@@ -150,7 +150,7 @@ def run_recommender():
                     st.markdown('IMDB Rating: ' + str(ratings) + '⭐')
         else:
             if select_genre:
-                imdb_score = st.slider("Choose an IMDB score:", min_value=1, max_value=10, step=0.5)
+                imdb_score = st.slider("Choose an IMDB score:", min_value=1, max_value=10, step=1)
                 number_of_rec = st.slider("How many recommendations do you want?", min_value=5, max_value=20, step=1)
                 test_point = [1 if genre in select_genre else 0 for genre in genres]
                 test_point.append(imdb_score)
