@@ -24,7 +24,7 @@ col_lottie, col_title = st.columns([1, 3])
 with col_lottie:
     st_lottie(lottie_movies)
 with col_title:
-    st.title("Movie Recommender System")
+    st.title("Movie Recommender")
     st.markdown('''<h5 style='text-align: left; color: #d73b5c;'> This recommendation system is based on the IMDB 5000 Movie Dataset.</h5>''', unsafe_allow_html=True)
 
 # Load the movie data and movie titles
