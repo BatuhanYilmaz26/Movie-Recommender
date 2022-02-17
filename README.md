@@ -6,5 +6,3 @@
 - Retrieved movie trailers for recommended movies dynamically, using [Youtube Data API v3](https://developers.google.com/youtube/v3).
 - Built the web app using Streamlit and deployed it on Heroku.
 - You can take a look at the [interactive demo](https://imdb5000-movie-recommender.herokuapp.com) to see how the recommender system works
-
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/[BatuhanYilmaz26]/[Movie-Recommender]/[master]/[app.py]). 
