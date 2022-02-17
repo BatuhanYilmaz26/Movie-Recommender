@@ -1,4 +1,6 @@
 ## Movie-Recommender
+![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
 #### About this project
 - This project is a movie recommender system built using the [IMDB 5000 dataset](https://www.kaggle.com/carolzhangdc/imdb-5000-movie-dataset). 
 - The dataset contains information about movies and their titles, release dates, cast, directors, storylines, ratings and trailers. 
