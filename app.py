@@ -58,8 +58,9 @@ def get_movie_info(imdb_link):
     movie_director = movie_description[0]
     movie_title = s_data.find("meta", property="og:title")
     movie_title = movie_title.attrs["content"]
+    movie_year = movie_title.split("(")[1].split(")")[0]
     movie_cast = str(movie_description[1]).replace("With", "Cast: ").strip()
-    movie_story = "Story: " + str(movie_description[2]).strip() + "."
+    movie_story= "Plot Summary: " + s_data.find("span", {"data-testid": "plot-xl"}).text
     rating = s_data.find("div", class_="AggregateRatingButton__TotalRatingAmount-sc-1ll29m0-3 jkCVKJ")
     rating = str(rating).split('<div class="AggregateRatingButton__TotalRatingAmount-sc-1ll29m0-3 jkCVKJ')
     rating = str(rating[1]).split("</div>")
@@ -70,7 +71,7 @@ def get_movie_info(imdb_link):
     for video in response['items']]
 
     movie_rating = "Total Rating count: " + rating
-    return movie_director, movie_cast, movie_story, movie_rating, trailer_link
+    return movie_director, movie_cast, movie_story, movie_rating, trailer_link, movie_year
 
 
 def knn_movie_recommender(test_point, k):
@@ -108,14 +109,14 @@ def run_recommender():
         if st.button("Show recommendations"):
             for movie, link, ratings in table:
                 c+=1
-                director, cast, story, total_rating, trailer_link = get_movie_info(link)
+                director, cast, movie_story, total_rating, trailer_link, movie_year = get_movie_info(link)
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.markdown(f"(**{c}**) [**{movie}**]({link})")
+                    st.markdown(f"(**{c}**) [**{movie}**]({link}) **({movie_year})**", unsafe_allow_html=True)
                     movie_poster_fetcher(link)
                     st.markdown(f"**{director}**")
                     st.markdown(f"**{cast}**")
-                    st.markdown(f"**{story}**")
+                    st.markdown(f"**{movie_story}**")
                     st.markdown(f"**{total_rating}**")
                     st.markdown(f"**IMDB Rating: {str(ratings)} ⭐**")
                 with col2:
@@ -133,14 +134,14 @@ def run_recommender():
             if st.button("Show recomendations"):
                 for movie, link, ratings in table:
                     c+=1
-                    director, cast, story, total_rating, trailer_link = get_movie_info(link)
+                    director, cast, movie_story, total_rating, trailer_link, movie_year = get_movie_info(link)
                     col5, col6 = st.columns(2)
                     with col5:
-                        st.markdown(f"(**{c}**) [**{movie}**]({link})")
+                        st.markdown(f"(**{c}**) [**{movie}**]({link}) **({movie_year})**")
                         movie_poster_fetcher(link)
                         st.markdown(f"**{director}**")
                         st.markdown(f"**{cast}**")
-                        st.markdown(f"**{story}**")
+                        st.markdown(f"**{movie_story}**")
                         st.markdown(f"**{total_rating}**")
                         st.markdown(f"**IMDB Rating: {str(ratings)} ⭐**")
                     with col6:
