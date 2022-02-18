@@ -76,6 +76,12 @@ def get_movie_info(imdb_link):
             movie_genres = movie_genres.replace(char, ", ")
     else:
         movie_genres = "Not Found"
+    
+    # get duration from df if imdb_link are matching
+    if imdb_link in df["movie_imdb_link"].values:
+        movie_duration = df.loc[df["movie_imdb_link"] == imdb_link, "duration"].values[0]
+    else:
+        movie_duration = "Not Found"
 
     request = youtube.search().list(part="snippet", channelType="any", maxResults=1, q=f"{movie_title} Official Trailer")
     response = request.execute()
@@ -83,7 +89,7 @@ def get_movie_info(imdb_link):
     for video in response['items']]
 
     movie_rating = "Total Rating count: " + rating
-    return movie_director, movie_cast, movie_story, movie_rating, trailer_link, movie_year, movie_genres
+    return movie_director, movie_cast, movie_story, movie_rating, trailer_link, movie_year, movie_genres, movie_duration
 
 
 def knn_movie_recommender(test_point, k):
@@ -121,7 +127,7 @@ def run_recommender():
         if st.button("Show recommendations"):
             for movie, link, ratings in table:
                 c+=1
-                director, cast, movie_story, total_rating, trailer_link, movie_year, movie_genres = get_movie_info(link)
+                director, cast, movie_story, total_rating, trailer_link, movie_year, movie_genres, movie_duration = get_movie_info(link)
                 col1, col2 = st.columns(2)
                 with col1:
                     st.markdown(f"(**{c}**) [**{movie}**]({link}) **({movie_year})**", unsafe_allow_html=True)
@@ -129,6 +135,7 @@ def run_recommender():
                     st.markdown(f"**{director}**")
                     st.markdown(f"**{cast}**")
                     st.markdown(f"**{movie_story}**")
+                    st.markdown(f"**Runtime: {movie_duration:.0f} minutes.**")
                     st.markdown(f"**Genres: {movie_genres} .**")
                     st.markdown(f"**{total_rating}**")
                     st.markdown(f"**IMDB Rating: {str(ratings)} ⭐**")
@@ -147,7 +154,7 @@ def run_recommender():
             if st.button("Show recomendations"):
                 for movie, link, ratings in table:
                     c+=1
-                    director, cast, movie_story, total_rating, trailer_link, movie_year, movie_genres = get_movie_info(link)
+                    director, cast, movie_story, total_rating, trailer_link, movie_year, movie_genres, movie_duration = get_movie_info(link)
                     col5, col6 = st.columns(2)
                     with col5:
                         st.markdown(f"(**{c}**) [**{movie}**]({link}) **({movie_year})**")
@@ -155,6 +162,7 @@ def run_recommender():
                         st.markdown(f"**{director}**")
                         st.markdown(f"**{cast}**")
                         st.markdown(f"**{movie_story}**")
+                        st.markdown(f"**Runtime: {movie_duration:.0f} minutes.**")
                         st.markdown(f"**Genres: {movie_genres} .**")
                         st.markdown(f"**{total_rating}**")
                         st.markdown(f"**IMDB Rating: {str(ratings)} ⭐**")
