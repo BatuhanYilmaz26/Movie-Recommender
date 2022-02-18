@@ -8,6 +8,7 @@ import PIL.Image
 from urllib.request import urlopen
 import os
 from googleapiclient.discovery import build
+import pandas as pd
 
 st.set_page_config(page_title="Movie Recommender", page_icon="🎬", layout="wide")
 
@@ -28,6 +29,7 @@ with col_title:
     st.markdown('''<h5 style='text-align: left; color: #d73b5c;'> This recommendation system is based on the IMDB 5000 Movie Dataset.</h5>''', unsafe_allow_html=True)
 
 # Load the movie data and movie titles
+df = pd.read_csv("./Data/movie_metadata.csv")
 with open("./Data/movie_data.json", "r+", encoding="utf-8") as f:
     data = json.load(f)
 with open("./Data/movie_titles.json", "r+", encoding="utf-8") as f:
@@ -65,13 +67,23 @@ def get_movie_info(imdb_link):
     rating = str(rating).split('<div class="AggregateRatingButton__TotalRatingAmount-sc-1ll29m0-3 jkCVKJ')
     rating = str(rating[1]).split("</div>")
     rating = str(rating[0]).replace(''' "> ''', '').replace('">', '')
+    # get genres from df if imdb_link are matching
+    if imdb_link in df["movie_imdb_link"].values:
+        movie_genres = df.loc[df["movie_imdb_link"] == imdb_link, "genres"].values[0]
+        # remove |, [, , ] from movie_genres
+        chars = ["|", "[", "]"]
+        for char in chars:
+            movie_genres = movie_genres.replace(char, ", ")
+    else:
+        movie_genres = "Not Found"
+
     request = youtube.search().list(part="snippet", channelType="any", maxResults=1, q=f"{movie_title} Official Trailer")
     response = request.execute()
     trailer_link = [f"https://www.youtube.com/watch?v={video['id']['videoId']}" \
     for video in response['items']]
 
     movie_rating = "Total Rating count: " + rating
-    return movie_director, movie_cast, movie_story, movie_rating, trailer_link, movie_year
+    return movie_director, movie_cast, movie_story, movie_rating, trailer_link, movie_year, movie_genres
 
 
 def knn_movie_recommender(test_point, k):
@@ -109,7 +121,7 @@ def run_recommender():
         if st.button("Show recommendations"):
             for movie, link, ratings in table:
                 c+=1
-                director, cast, movie_story, total_rating, trailer_link, movie_year = get_movie_info(link)
+                director, cast, movie_story, total_rating, trailer_link, movie_year, movie_genres = get_movie_info(link)
                 col1, col2 = st.columns(2)
                 with col1:
                     st.markdown(f"(**{c}**) [**{movie}**]({link}) **({movie_year})**", unsafe_allow_html=True)
@@ -117,6 +129,7 @@ def run_recommender():
                     st.markdown(f"**{director}**")
                     st.markdown(f"**{cast}**")
                     st.markdown(f"**{movie_story}**")
+                    st.markdown(f"**Genres: {movie_genres} .**")
                     st.markdown(f"**{total_rating}**")
                     st.markdown(f"**IMDB Rating: {str(ratings)} ⭐**")
                 with col2:
@@ -134,7 +147,7 @@ def run_recommender():
             if st.button("Show recomendations"):
                 for movie, link, ratings in table:
                     c+=1
-                    director, cast, movie_story, total_rating, trailer_link, movie_year = get_movie_info(link)
+                    director, cast, movie_story, total_rating, trailer_link, movie_year, movie_genres = get_movie_info(link)
                     col5, col6 = st.columns(2)
                     with col5:
                         st.markdown(f"(**{c}**) [**{movie}**]({link}) **({movie_year})**")
@@ -142,6 +155,7 @@ def run_recommender():
                         st.markdown(f"**{director}**")
                         st.markdown(f"**{cast}**")
                         st.markdown(f"**{movie_story}**")
+                        st.markdown(f"**Genres: {movie_genres} .**")
                         st.markdown(f"**{total_rating}**")
                         st.markdown(f"**IMDB Rating: {str(ratings)} ⭐**")
                     with col6:
