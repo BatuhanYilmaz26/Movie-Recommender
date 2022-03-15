@@ -63,10 +63,7 @@ def get_movie_info(imdb_link):
     movie_year = movie_title.split("(")[1].split(")")[0]
     movie_cast = str(movie_description[1]).replace("With", "Cast: ").strip()
     movie_story= "Plot Summary: " + s_data.find("span", {"data-testid": "plot-xl"}).text
-    rating = s_data.find("div", class_="AggregateRatingButton__TotalRatingAmount-sc-1ll29m0-3 jkCVKJ")
-    rating = str(rating).split('<div class="AggregateRatingButton__TotalRatingAmount-sc-1ll29m0-3 jkCVKJ')
-    rating = str(rating[1]).split("</div>")
-    rating = str(rating[0]).replace(''' "> ''', '').replace('">', '')
+    rating = s_data.find("div", {"class": "sc-7ab21ed2-3 dPVcnq"}).text
     # get genres from df if imdb_link are matching
     if imdb_link in df["movie_imdb_link"].values:
         movie_genres = df.loc[df["movie_imdb_link"] == imdb_link, "genres"].values[0]
